@@ -3,23 +3,17 @@ package com.saifi369.notificationschannel;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.RemoteInput;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import java.io.IOException;
-
 public class MainActivity extends AppCompatActivity {
 
+    public static final String MESSAGE_KEY = "MESSAGE_KEY";
     private EditText mTitleText,mMessageText;
     private NotificationManager manager;
 
@@ -38,11 +32,27 @@ public class MainActivity extends AppCompatActivity {
         String title=mTitleText.getText().toString();
         String message=mMessageText.getText().toString();
 
-        Notification notification = new NotificationCompat.Builder(this,App.CHANNEL_TWO_ID)
+        Intent contentIntent = new Intent(this, MainActivity.class);
+        PendingIntent contentPendingIntent = PendingIntent.getActivity(
+                this, 0, contentIntent, 0);
+
+        Intent actionIntent = new Intent(this, SecondActivity.class);
+        actionIntent.putExtra(MESSAGE_KEY, message);
+        PendingIntent actionPendingIntent = PendingIntent.getActivity(
+                this, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        Notification notification = new NotificationCompat.Builder(this, App.CHANNEL_ONE_ID)
                 .setSmallIcon(R.drawable.ic_one)
                 .setContentTitle(title)
                 .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(contentPendingIntent)
+                .addAction(R.mipmap.ic_launcher, "Show Toast", actionPendingIntent)
+                .setColor(Color.BLUE)
+                .setAutoCancel(true)
+                .setOnlyAlertOnce(true)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .build();
 
         manager.notify(1,notification);
