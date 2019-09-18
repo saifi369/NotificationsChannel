@@ -18,9 +18,8 @@ public class SecondActivity extends AppCompatActivity {
 
         if (getIntent().hasExtra(MainActivity.MESSAGE_KEY)) {
             String message = getIntent().getStringExtra(MainActivity.MESSAGE_KEY);
+            Toast.makeText(this, message + " from notification", Toast.LENGTH_SHORT).show();
             mOutputText.setText(message);
-            Toast.makeText(this, "Toast from Notification: " + message, Toast.LENGTH_SHORT).show();
         }
-
     }
 }

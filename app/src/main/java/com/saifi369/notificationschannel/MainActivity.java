@@ -33,11 +33,14 @@ public class MainActivity extends AppCompatActivity {
         String message=mMessageText.getText().toString();
 
         Intent contentIntent = new Intent(this, MainActivity.class);
+
         PendingIntent contentPendingIntent = PendingIntent.getActivity(
                 this, 0, contentIntent, 0);
 
         Intent actionIntent = new Intent(this, SecondActivity.class);
+
         actionIntent.putExtra(MESSAGE_KEY, message);
+
         PendingIntent actionPendingIntent = PendingIntent.getActivity(
                 this, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .build();
 
+
         manager.notify(1,notification);
 
     }
@@ -64,11 +68,26 @@ public class MainActivity extends AppCompatActivity {
         String title=mTitleText.getText().toString();
         String message=mMessageText.getText().toString();
 
+        Intent broadcastIntent = new Intent(this, NotificationBroadcastReceiver.class);
+        broadcastIntent.putExtra(MESSAGE_KEY, message);
+
+        PendingIntent broadcastPendingIntent = PendingIntent.getBroadcast(
+                this, 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Intent serviceIntent = new Intent(this, MyIntentService.class);
+        serviceIntent.putExtra(MESSAGE_KEY, message);
+
+        PendingIntent servicePendingIntent = PendingIntent.getService(
+                this, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
         Notification notification = new NotificationCompat.Builder(this,App.CHANNEL_TWO_ID)
                 .setSmallIcon(R.drawable.ic_two)
                 .setContentTitle(title)
                 .setContentText(message)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .addAction(R.mipmap.ic_launcher, "Show Toast", broadcastPendingIntent)
+                .addAction(R.mipmap.ic_launcher, "Start Service", servicePendingIntent)
                 .build();
 
         manager.notify(2,notification);
@@ -77,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
         mTitleText=findViewById(R.id.text_tile);
+
         mMessageText=findViewById(R.id.text_message);
     }
 }
